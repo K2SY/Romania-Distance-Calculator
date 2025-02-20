@@ -9,10 +9,10 @@ Original file is located at
 
 from ast import main
 import heapq
-from queue import PriorityQueue
 
 # Road map of Romania
 # Data structure that list cities and each neighboring city connecting to it with is respective distance
+# Step one: map the diffrent cities of romania with each city being a key and the neighboring cities and distance be the value
 def load_map():
   return{
       #city: { connecting city: Distance }
@@ -38,6 +38,7 @@ def load_map():
       'Neamt': {'Iasi': 87}
   }
 
+# Step two: Implemente the Uniform Cost Search algorith to find the lowest cost path to naviagte between two cities
 def cost_search(romania_map, origin_city, destination_city):
   queue = []
   heapq.heappush(queue, (0, origin_city, []))
@@ -48,18 +49,22 @@ def cost_search(romania_map, origin_city, destination_city):
 
 
   while queue:
+
+    # Step 3: Identifies and extracts the path with the lowest cost
     cost, current_city, path_taken = heapq.heappop(queue)
+    # if destination is reached prints the solution and return
     if current_city == destination_city:
-      print(f"\nFinal Iteration: {'->'.join(path_taken + [destination_city])}")
+      print("\nSolution")
+      print(f"Final Iteration: {'->'.join(path_taken + [destination_city])}")
       print(f"Cost: {origin_city} to {destination_city} is {cost}")
       return
-
+    # Skips over cities already visited
     if current_city in visted_cities:
       continue
     visted_cities.add(current_city)
 
     next_state = []
-
+    # adds neighboring cities explored and adds them to the queue if not already in visited cities set
     for next_closest_city, travel_cost in romania_map[current_city].items():
       if next_closest_city not in visted_cities:
         new_path = path_taken + [current_city]
@@ -69,20 +74,22 @@ def cost_search(romania_map, origin_city, destination_city):
 
     count = count + 1
     if next_state:
-      print(f"Iteration{count}: {{ {','.join(next_state)}}}")
+      print(f"Iteration{count}: {{{','.join(next_state)}}}")
     else:
-      print(f"Iteration{count}: no new paths added, {cost}")
+      print(f"Iteration3{count}: no new paths added, {cost}")
 
   print("No path found")
 
+#Main function for testing use ability
 def main():
 
+  #input is case sensitve Captial letter for first letter of city
   map = load_map()
-  origin_city = input("Enter origin city: ")
-  destination_city = input("Enter the destination city: ")
+  origin_city = input("Enter origin city:")
+  destination_city = input("Enter the destination city:")
 
   if origin_city not in map or destination_city not in map:
-    print("Invalid city")
+    print("Invalid city: Please try again with a valid city")
     return
 
   cost_search(map, origin_city, destination_city)
